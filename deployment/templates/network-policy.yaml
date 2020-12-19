@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "keystore-monitoring-exporter.fullname" . }}-networkpolicy
+spec:
+  ingress:
+  - ports:
+    - port: {{ .Values.service.port }}
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "keystore-monitoring-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}

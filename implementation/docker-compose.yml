@@ -1,0 +1,14 @@
+version: "3.4"
+
+services:
+  keystore-monitoring-exporter:
+    image: mrmyiagi/keystore-monitoring-exporter:latest
+    container_name: keystore-monitoring-exporter
+    build:
+      context: powershell
+      dockerfile: Dockerfile
+    ports:
+      - "9700:9700"
+    environment: 
+    - KEYSTOREPASSWORD=${KEYSTOREPASSWORD}
+    restart: unless-stopped

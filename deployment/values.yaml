@@ -1,0 +1,40 @@
+replicaCount: 1
+
+image:
+  repository: mrmyiagi/keystore-monitoring-exporter:latest
+  tag: latest
+  pullPolicy: Always
+  pullSecret: SHOULD_BE_SET_VIA_DEPLOYMENT_PIPELINE
+
+nameOverride: ""
+fullnameOverride: ""
+
+prometheus:
+  enabled: true
+
+service:
+  type: ClusterIP
+  port: 9700
+  portName: certexporter
+  targetPort: 9700
+
+certExporter: 
+  keyStorePassword: SHOULD_BE_SET_VIA_DEPLOYMENT_PIPELINE
+  kafkaSecretName: SHOULD_BE_SET_VIA_DEPLOYMENT_PIPELINE
+  runAsUser: 1000
+  fsGroup: 1000
+
+resources:
+   limits:
+     cpu: 100m
+     memory: 256Mi
+   requests:
+     memory: 128Mi
+     cpu: 1m
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

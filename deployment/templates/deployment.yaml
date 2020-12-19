@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "keystore-monitoring-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "keystore-monitoring-exporter.name" . }}
+    helm.sh/chart: {{ include "keystore-monitoring-exporter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "keystore-monitoring-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "keystore-monitoring-exporter.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        prometheus.io/scrape: '{{ .Values.prometheus.enabled }}'
+        prometheus.io/port: '{{ .Values.service.port }}'
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.certExporter.runAsUser }}
+        fsGroup: {{ .Values.certExporter.fsGroup }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: KEYSTOREPASSWORD
+              value: {{ .Values.certExporter.keyStorePassword }}                         
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: {{ .Values.service.portName }}
+          resources:
+{{- toYaml .Values.resources | nindent 12 }}
+{{- if .Values.image.pullSecret }}
+          volumeMounts:
+            - mountPath: /keystore
+              readOnly: true
+              name: kafka-secrets
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{- toYaml . | nindent 8 }}
+{{- end }}
+      volumes:
+        - name: kafka-secrets
+          secret:
+            secretName: {{ .Values.certExporter.kafkaSecretName }}     

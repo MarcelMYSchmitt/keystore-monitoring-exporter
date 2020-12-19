@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "keystore-monitoring-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "keystore-monitoring-exporter.name" . }}
+    helm.sh/chart: {{ include "keystore-monitoring-exporter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: {{ .Values.service.portName }}
+  selector:
+    app.kubernetes.io/name: {{ include "keystore-monitoring-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
