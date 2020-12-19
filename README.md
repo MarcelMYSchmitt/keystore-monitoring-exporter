@@ -8,6 +8,9 @@ If you have for example a Kubernes Cluster with an internal Kafka running and an
 So what does this means?  
 It's secret `kafka-secret` with following content `keystore.jks` file which normally will be mounted into your application (file or environmet variables). To make sure your certificate is up to date this exporter will also get the certificate/secret mounted. 
 
+## Note 
+In the "implementation" folder you can find an existing dummy keystore file which password is "password". This keystore fill will be replaced by the mounted file in your Kubernetes Cluster.
+ 
 # Deployment
 You can build the image by using everything inside "implementation" folder. Inside "deployment" folder you find a helm chart for running the exporter im Kubernetes. The helm chart have annotations for security (runAsUser,securityGroup) and also for Prometheus (scrape targets) defined. `pullSecret`, `keyStorePassword`, `kafkaSecretName` have to be replaced by you. 
 
