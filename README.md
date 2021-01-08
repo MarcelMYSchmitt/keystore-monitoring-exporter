@@ -6,7 +6,7 @@ In this repository you can find the setup of a small prometheus exporter written
 If you have for example a Kubernes Cluster with an internal Kafka running and an application written in Spring which wants to connect to Kafka, you have to use (because of security reasons) a certificate. This certificate is normally deployed as secret in a namespace. The secret has normally the keystore file (jks) which includes the certificate itself. 
 
 So what does this means?  
-It's a secret `kafka-secret` with following content `keystore.jks` file which normally will be mounted into your application (file or environmet variables). To make sure your certificate is up to date this exporter will also get the certificate/secret mounted. 
+Use case: you have a secret `kafka-secret` with following content `keystore.jks` file which normally will be mounted into your application (file or environmet variables). To make sure your certificate is up to date this exporter will also get the certificate/secret mounted. 
 
 ## Note 
 In the "implementation" folder you can find an existing dummy keystore file which password is "password". This keystore fill will be replaced by the mounted file in your Kubernetes Cluster.
